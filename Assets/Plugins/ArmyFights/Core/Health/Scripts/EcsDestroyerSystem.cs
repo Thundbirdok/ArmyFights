@@ -4,7 +4,6 @@ using UnityEngine;
 
 namespace Plugins.ArmyFights.Core.Health.Scripts
 {
-    using Plugins.ArmyFights.Core.GameObjectProvider.Scripts;
     using Scellecs.Morpeh;
 
     [Il2CppSetOption(Option.NullChecks, false)]
@@ -14,7 +13,7 @@ namespace Plugins.ArmyFights.Core.Health.Scripts
     public sealed class EcsDestroyerSystem : UpdateSystem 
     {
         private Filter destroyedEntities;
-        private Stash<EcsGameObjectComponent> gameObjectStash;
+        private Stash<EcsHealthComponent> gameObjectStash;
         
         public override void OnAwake() 
         {
@@ -22,7 +21,7 @@ namespace Plugins.ArmyFights.Core.Health.Scripts
                 .With<EcsHealthComponent>()
                 .With<EcsDeathMark>();
             
-            gameObjectStash = World.GetStash<EcsGameObjectComponent>();
+            gameObjectStash = World.GetStash<EcsHealthComponent>();
         }
 
         public override void OnUpdate(float deltaTime) 

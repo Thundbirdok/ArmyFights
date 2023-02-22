@@ -1,6 +1,5 @@
 namespace Plugins.ArmyFights.Core.Health.Scripts
 {
-    using Plugins.ArmyFights.Core.GameObjectProvider.Scripts;
     using Scellecs.Morpeh;
     using Scellecs.Morpeh.Systems;
     using Unity.IL2CPP.CompilerServices;

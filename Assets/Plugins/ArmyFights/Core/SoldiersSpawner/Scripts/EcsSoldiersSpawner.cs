@@ -1,6 +1,7 @@
 namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
 {
     using System.Collections.Generic;
+    using Plugins.ArmyFights.Core.Fights.Scripts;
     using Plugins.ArmyFights.Core.Team;
     using Plugins.ArmyFights.Example.Scripts;
     using Scellecs.Morpeh;
@@ -43,6 +44,7 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
                         container.transform, 
                         position,
                         team.transform.rotation,
+                        team.side,
                         team.color
                     );
                 }
@@ -93,15 +95,24 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
         (
             Transform container, 
             Vector3 position, 
-            Quaternion rotation, 
+            Quaternion rotation,
+            bool side,
             Color color
         )
         {
             var soldier = Instantiate(soldierPrefab, position, rotation, container);
 
-            if (soldier.TryGetComponent(out EcsColorControllerProvider colorController))
+            if (soldier.TryGetComponent(out EcsFightableProvider fightableProvider))
             {
-                colorController.Stash.Get(colorController.Entity).meshRenderer.material.color = color;
+                ref var fightableComponent = ref fightableProvider.Stash.Get(fightableProvider.Entity);
+                fightableComponent.Side = side;
+            }
+
+            if (soldier.TryGetComponent(out EcsColorControllerProvider colorControllerProvider))
+            {
+                var colorControllerComponent = colorControllerProvider.Stash.Get(colorControllerProvider.Entity);
+
+                colorControllerComponent.meshRenderer.material.color = color;
             }
         }
     }
