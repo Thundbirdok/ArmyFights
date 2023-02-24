@@ -6,5 +6,5 @@ namespace Plugins.ArmyFights.Core.Team
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public sealed class EcsTeamProvider : MonoProvider<EcsTeamSpawnComponent> { }
+    public sealed class EcsTeamSpawnSpotProvider : MonoProvider<EcsTeamSpawnSpotComponent> { }
 }

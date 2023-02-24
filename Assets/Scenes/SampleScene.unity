@@ -285,8 +285,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedData:
-    side: 0
-    color: {r: 0.8962264, g: 0.22518113, b: 0.10568706, a: 1}
+    team: {fileID: 11400000, guid: aa094b3040b7c0c48a5ed5f629b55603, type: 2}
     soldierSpawnSpace: {x: 1.25, y: 1.25}
     transform: {fileID: 519950564}
     leftBackPoint: {fileID: 1241922865}
@@ -1437,8 +1436,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedData:
-    side: 1
-    color: {r: 0, g: 0.5200343, b: 1, a: 1}
+    team: {fileID: 11400000, guid: d938532961d9f06438b4ef59f0a0d2eb, type: 2}
     soldierSpawnSpace: {x: 1.25, y: 1.25}
     transform: {fileID: 2089251196}
     leftBackPoint: {fileID: 1051086838}

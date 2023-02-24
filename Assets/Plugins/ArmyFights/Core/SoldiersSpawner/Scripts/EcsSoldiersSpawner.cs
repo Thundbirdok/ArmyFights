@@ -25,7 +25,7 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
 
             var container = containerFilter.First().GetComponent<EcsSoldierContainerComponent>();
             
-            var teamsFilter = World.Filter.With<EcsTeamSpawnComponent>();
+            var teamsFilter = World.Filter.With<EcsTeamSpawnSpotComponent>();
             
             Spawn(teamsFilter, container);
         }
@@ -34,7 +34,7 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
         {
             foreach (var entity in teamsFilter)
             {
-                var team = entity.GetComponent<EcsTeamSpawnComponent>();
+                var team = entity.GetComponent<EcsTeamSpawnSpotComponent>();
 
                 var positions = GetPositions(team);
 
@@ -45,14 +45,14 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
                         container.transform, 
                         position,
                         team.transform.rotation,
-                        team.side,
-                        team.color
+                        team.team.Side,
+                        team.team.Color
                     );
                 }
             }
         }
 
-        private static List<Vector3> GetPositions(EcsTeamSpawnComponent team)
+        private static List<Vector3> GetPositions(EcsTeamSpawnSpotComponent team)
         {
             var positions = new List<Vector3>();
 

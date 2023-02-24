@@ -9,11 +9,9 @@ namespace Plugins.ArmyFights.Core.Team
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
     [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public struct EcsTeamSpawnComponent : IComponent
+    public struct EcsTeamSpawnSpotComponent : IComponent
     {
-        public bool side;
-        
-        public Color color;
+        public Team team;
         
         public Vector2 soldierSpawnSpace;
 
