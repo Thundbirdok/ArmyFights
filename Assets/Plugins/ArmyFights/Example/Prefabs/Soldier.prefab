@@ -193,9 +193,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedData:
-    gameObject: {fileID: 4245509069891991404}
     maxHealthPoints: 100
-    healthPoints: 100
 --- !u!114 &-4493419486646810968
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -223,8 +221,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedData:
-    transform: {fileID: 4245509069891991378}
-    rigidbody: {fileID: 4123737105755964459}
     movementForce: 75
 --- !u!114 &7199864438637713019
 MonoBehaviour:
@@ -238,9 +234,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 496ceec70360ec448835a371857a1c64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  serializedData:
-    side: 0
-    transform: {fileID: 4245509069891991378}
 --- !u!114 &3946931966316566752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -254,9 +247,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   serializedData:
-    transform: {fileID: 4245509069891991378}
     attackDistance: 1.75
-    damagePerSecond: 25
+    damage: 25
+    attackCooldown: 0.25
 --- !u!54 &4123737105755964459
 Rigidbody:
   m_ObjectHideFlags: 0

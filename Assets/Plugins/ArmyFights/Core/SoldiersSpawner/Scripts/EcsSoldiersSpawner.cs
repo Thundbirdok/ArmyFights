@@ -2,6 +2,7 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
 {
     using System.Collections.Generic;
     using Plugins.ArmyFights.Core.Fights.Scripts;
+    using Plugins.ArmyFights.Core.Health.Scripts;
     using Plugins.ArmyFights.Core.Team;
     using Plugins.ArmyFights.Example.Scripts;
     using Scellecs.Morpeh;
@@ -102,6 +103,12 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
         {
             var soldier = Instantiate(soldierPrefab, position, rotation, container);
 
+            if (soldier.TryGetComponent(out EcsHealthProvider healthProvider))
+            {
+                ref var healthComponent = ref healthProvider.Stash.Get(healthProvider.Entity);
+                healthComponent.HealthPoints = healthComponent.maxHealthPoints;
+            }
+            
             if (soldier.TryGetComponent(out EcsFightableProvider fightableProvider))
             {
                 ref var fightableComponent = ref fightableProvider.Stash.Get(fightableProvider.Entity);

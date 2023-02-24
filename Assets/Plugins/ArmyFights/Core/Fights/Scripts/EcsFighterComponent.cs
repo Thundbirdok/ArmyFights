@@ -4,8 +4,7 @@ using Unity.IL2CPP.CompilerServices;
 namespace Plugins.ArmyFights.Core.Fights.Scripts
 {
     using System;
-    using UnityEngine;
-
+    
     [Serializable]
     [Il2CppSetOption(Option.NullChecks, false)]
     [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
@@ -14,8 +13,13 @@ namespace Plugins.ArmyFights.Core.Fights.Scripts
     {
         public float attackDistance;
         
-        public float damagePerSecond;
-            
+        public int damage;
+
+        public float attackCooldown;
+
+        [NonSerialized]
+        public float TimeAfterAttackPassed;
+        
         [NonSerialized]
         public EntityId TargetId;
     }

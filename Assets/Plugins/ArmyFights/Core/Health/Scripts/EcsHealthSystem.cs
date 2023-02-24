@@ -17,17 +17,17 @@ namespace Plugins.ArmyFights.Core.Health.Scripts
         public override void OnAwake()
         {
             filter = World.Filter.With<EcsHealthComponent>();
+            
+            healthStash = World.GetStash<EcsHealthComponent>();
         }
 
         public override void OnUpdate(float deltaTime) 
         {
-            healthStash = World.GetStash<EcsHealthComponent>();
-            
             foreach (var entity in filter)
             {
                 ref var healthComponent = ref healthStash.Get(entity);
 
-                if (healthComponent.healthPoints > 0)
+                if (healthComponent.HealthPoints > 0)
                 {
                     continue;
                 }

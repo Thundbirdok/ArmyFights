@@ -4,8 +4,6 @@ namespace Plugins.ArmyFights.Core.Movement.Scripts
     using Scellecs.Morpeh;
     using Scellecs.Morpeh.Native;
     using Scellecs.Morpeh.Systems;
-    using Sirenix.OdinInspector;
-    using Unity.Burst;
     using Unity.IL2CPP.CompilerServices;
     using Unity.Jobs;
     using UnityEngine;
@@ -43,7 +41,7 @@ namespace Plugins.ArmyFights.Core.Movement.Scripts
         {
             using (var nativeFilter = filter.AsNative())
             {
-                var parallelJob = new MovementJob
+                var parallelJob = new MoveToTargetJob
                 {
                     Entities = nativeFilter,
                     FighterStash = fighterStash.AsNative(),
@@ -54,59 +52,6 @@ namespace Plugins.ArmyFights.Core.Movement.Scripts
                 var parallelJobHandle = parallelJob.Schedule(nativeFilter.length, 64);
                 
                 parallelJobHandle.Complete();
-            }
-        }
-        
-        [BurstCompile]
-        private struct MovementJob : IJobParallelFor
-        {
-            [ReadOnly]
-            public NativeFilter Entities;
-            public NativeStash<EcsFighterComponent> FighterStash;
-            public NativeStash<EcsFightableComponent> FightableStash;
-            public NativeStash<EcsMovementComponent> MovementStash;
-            
-            public void Execute(int index)
-            {
-                MoveToTarget(Entities[index]);
-            }
-            
-            private void MoveToTarget(EntityId entity)
-            {
-                var fighterComponent = FighterStash.Get(entity);
-
-                ref var movementComponent = ref MovementStash.Get(entity);
-                
-                if (fighterComponent.TargetId == EntityId.Invalid)
-                {
-                    movementComponent.CurrentForce = Vector3.zero;
-                    
-                    return;
-                }
-
-                var target = FightableStash.Get(fighterComponent.TargetId);
-
-                var direction = target.Position - movementComponent.Position;
-
-                if (direction == Vector3.zero)
-                {
-                    return;
-                }
-                
-                movementComponent.Rotation = Quaternion.LookRotation(direction);
-            
-                var distance = direction.magnitude;
-
-                if (distance < fighterComponent.attackDistance)
-                {
-                    movementComponent.CurrentForce = Vector3.zero;
-                    
-                    return;
-                }
-
-                var force = direction.normalized * movementComponent.movementForce;
-            
-                movementComponent.CurrentForce = force;
             }
         }
     }
