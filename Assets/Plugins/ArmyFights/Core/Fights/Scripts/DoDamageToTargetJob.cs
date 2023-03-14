@@ -3,32 +3,35 @@ namespace Plugins.ArmyFights.Core.Fights.Scripts
     using Plugins.ArmyFights.Core.Health.Scripts;
     using Scellecs.Morpeh;
     using Scellecs.Morpeh.Native;
-    using Sirenix.OdinInspector;
     using Unity.Burst;
+    using Unity.Collections;
     using Unity.Jobs;
-    using UnityEngine;
 
     [BurstCompile]
     public struct DoDamageToTargetJob : IJobParallelFor
     {
         [ReadOnly]
         public NativeFilter Entities;
+        
         [ReadOnly]
         public NativeStash<EcsFighterComponent> FighterStash;
+        
+        [ReadOnly]
+        public NativeStash<EcsFightTargetDataComponent> TargetDataStash;
+        
         [ReadOnly]
         public NativeStash<EcsHealthComponent> HealthStash;
+        
         [ReadOnly]
         public float DeltaTime;
         
-        public void Execute(int index)
-        {
-            DoDamage(Entities[index]);
-        }
-            
-        [BurstCompile]
+        public void Execute(int index) => DoDamage(Entities[index]);
+
         private void DoDamage(EntityId entity)
         {
             ref var fighterComponent = ref FighterStash.Get(entity);
+
+            ref var targetDataComponent = ref TargetDataStash.Get(entity);
 
             fighterComponent.TimeAfterAttackPassed += DeltaTime;
 
@@ -36,15 +39,15 @@ namespace Plugins.ArmyFights.Core.Fights.Scripts
             {
                 return;
             }
-            
-            if (fighterComponent.TargetId == EntityId.Invalid)
+
+            if (targetDataComponent.DirectionToTarget.magnitude > fighterComponent.attackDistance)
             {
                 return;
             }
-
+            
             fighterComponent.TimeAfterAttackPassed = 0;
             
-            ref var healthComponent = ref HealthStash.Get(fighterComponent.TargetId);
+            ref var healthComponent = ref HealthStash.Get(targetDataComponent.TargetId);
 
             healthComponent.HealthPoints -= fighterComponent.damage;
         }

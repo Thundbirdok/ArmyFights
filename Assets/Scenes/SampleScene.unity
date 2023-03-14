@@ -205,8 +205,6 @@ MonoBehaviour:
   - enabled: 1
     system: {fileID: 11400000, guid: 2df063385fcee374399a3cc2fe1a4371, type: 2}
   - enabled: 1
-    system: {fileID: 11400000, guid: bf053cf779f31a7479dd087dd3b49a75, type: 2}
-  - enabled: 1
     system: {fileID: 11400000, guid: 4f3f41899de7007459f1e388c6a31277, type: 2}
   - enabled: 1
     system: {fileID: 11400000, guid: fef26945a1bbd4b49b6a8e60386eb46a, type: 2}
@@ -221,7 +219,11 @@ MonoBehaviour:
     system: {fileID: 11400000, guid: 39f83a68b5b3f0c498e2bd269bfc0e5f, type: 2}
   - enabled: 1
     system: {fileID: 11400000, guid: 99531cfd11d102a41b65d3b88c5096e8, type: 2}
-  lateUpdateSystems: []
+  lateUpdateSystems:
+  - enabled: 0
+    system: {fileID: 11400000, guid: 983e4acf849692446910b49ef43c7dc5, type: 2}
+  - enabled: 1
+    system: {fileID: 11400000, guid: bf053cf779f31a7479dd087dd3b49a75, type: 2}
   cleanupSystems: []
 --- !u!4 &350078070
 Transform:

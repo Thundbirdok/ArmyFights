@@ -33,8 +33,8 @@ namespace Plugins.ArmyFights.Core.Movement.Scripts
             foreach (var entity in filter)
             {
                 ref var component = ref movementStash.Get(entity);
-    
-                component.Position = transformStash.Get(entity).transform.position;
+                
+                component.CurrentForce = Vector3.zero;
             }
         }
     }

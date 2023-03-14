@@ -13,12 +13,6 @@ namespace Plugins.ArmyFights.Core.Movement.Scripts
     public struct EcsMovementComponent : IComponent
     {
         [NonSerialized]
-        public Vector3 Position;
-        
-        [NonSerialized]
-        public Quaternion Rotation;
-        
-        [NonSerialized]
         public Vector3 CurrentForce;
             
         public float movementForce;

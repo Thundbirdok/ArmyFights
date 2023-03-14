@@ -18,13 +18,15 @@ namespace Plugins.ArmyFights.Core.Fights.Scripts
 
         private Stash<EcsFighterComponent> fighterStash;
         private Stash<EcsHealthComponent> healthStash;
-
+        private Stash<EcsFightTargetDataComponent> targetDataStash;
+        
         public override void OnAwake()
         {
-            filter = World.Filter.With<EcsFighterComponent>();
+            filter = World.Filter.With<EcsFightTargetDataComponent>();
 
             fighterStash = World.GetStash<EcsFighterComponent>();
             healthStash = World.GetStash<EcsHealthComponent>();
+            targetDataStash = World.GetStash<EcsFightTargetDataComponent>();
         }
 
         public override void OnUpdate(float deltaTime) 
@@ -36,6 +38,7 @@ namespace Plugins.ArmyFights.Core.Fights.Scripts
                     Entities = nativeFilter,
                     FighterStash = fighterStash.AsNative(),
                     HealthStash = healthStash.AsNative(),
+                    TargetDataStash = targetDataStash.AsNative(),
                     DeltaTime = deltaTime
                 };
             
