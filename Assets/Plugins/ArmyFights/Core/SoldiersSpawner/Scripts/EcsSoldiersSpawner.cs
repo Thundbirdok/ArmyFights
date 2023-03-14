@@ -1,8 +1,9 @@
 namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
 {
-    using System.Collections.Generic;
     using Plugins.ArmyFights.Core.Fights.Scripts;
+    using Plugins.ArmyFights.Core.GameObject.Scripts;
     using Plugins.ArmyFights.Core.Health.Scripts;
+    using Plugins.ArmyFights.Core.Place;
     using Plugins.ArmyFights.Core.Team;
     using Plugins.ArmyFights.Example.Scripts;
     using Scellecs.Morpeh;
@@ -36,7 +37,13 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
             {
                 var team = entity.GetComponent<EcsTeamSpawnSpotComponent>();
 
-                var positions = GetPositions(team);
+                var positions = PlaceUtility.GetSpaceLocalPositionsInPlace
+                (
+                    team.place,
+                    team.soldierSpawnSpace
+                );
+                
+                PlaceUtility.TransformToWorldPosition(team.transform, positions);
 
                 foreach (var position in positions)
                 {
@@ -50,41 +57,6 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
                     );
                 }
             }
-        }
-
-        private static List<Vector3> GetPositions(EcsTeamSpawnSpotComponent team)
-        {
-            var positions = new List<Vector3>();
-
-            var xDistance = (team.RightFrontLocalPosition.x - team.LeftBackLocalPosition.x);
-            var xOffset = (xDistance % team.soldierSpawnSpace.x) / 2;
-            
-            var yDistance = (team.RightFrontLocalPosition.y - team.LeftBackLocalPosition.y);
-            var yOffset = (yDistance % team.soldierSpawnSpace.y) / 2;
-            
-            for
-            (
-                var i = team.LeftBackLocalPosition.z + yOffset + team.soldierSpawnSpace.y / 2;
-                i < team.RightFrontLocalPosition.z - team.soldierSpawnSpace.y / 2;
-                i += team.soldierSpawnSpace.y
-            )
-            {
-                for
-                (
-                    var j = team.LeftBackLocalPosition.x + xOffset + team.soldierSpawnSpace.x / 2;
-                    j < team.RightFrontLocalPosition.x - team.soldierSpawnSpace.x / 2;
-                    j += team.soldierSpawnSpace.x
-                )
-                {
-                    var localPosition = new Vector3(j, 0, i);
-
-                    var position = team.transform.TransformPoint(localPosition);
-
-                    positions.Add(position);
-                }
-            }
-
-            return positions;
         }
 
         public override void Dispose() 
@@ -120,6 +92,13 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
                 var colorControllerComponent = colorControllerProvider.Stash.Get(colorControllerProvider.Entity);
 
                 colorControllerComponent.meshRenderer.material.color = color;
+            }
+            
+            if (soldier.TryGetComponent(out EcsGameObjectProvider gameObjectProvider))
+            {
+                var gameObjectComponent = gameObjectProvider.Stash.Get(gameObjectProvider.Entity);
+
+                gameObjectComponent.gameObject.SetActive(true);
             }
         }
     }

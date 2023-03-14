@@ -3,6 +3,7 @@ using Unity.IL2CPP.CompilerServices;
 
 namespace Plugins.ArmyFights.Core.Team
 {
+    using Plugins.ArmyFights.Core.Place;
     using UnityEngine;
 
     [System.Serializable]
@@ -16,11 +17,10 @@ namespace Plugins.ArmyFights.Core.Team
         public Vector2 soldierSpawnSpace;
 
         public Transform transform;
+
+        public SquarePlace place;
         
-        public Transform leftBackPoint;
-        public Vector3 LeftBackLocalPosition => leftBackPoint.localPosition;
-        
-        public Transform rightFrontPoint;
-        public Vector3 RightFrontLocalPosition => rightFrontPoint.localPosition;
+        public Vector3 LeftBackLocalPosition => place.LeftBackLocalPosition;
+        public Vector3 RightFrontLocalPosition => place.RightFrontLocalPosition;
     }
 }

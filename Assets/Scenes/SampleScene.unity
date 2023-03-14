@@ -220,8 +220,6 @@ MonoBehaviour:
   - enabled: 1
     system: {fileID: 11400000, guid: 99531cfd11d102a41b65d3b88c5096e8, type: 2}
   lateUpdateSystems:
-  - enabled: 0
-    system: {fileID: 11400000, guid: 983e4acf849692446910b49ef43c7dc5, type: 2}
   - enabled: 1
     system: {fileID: 11400000, guid: bf053cf779f31a7479dd087dd3b49a75, type: 2}
   cleanupSystems: []
@@ -290,8 +288,9 @@ MonoBehaviour:
     team: {fileID: 11400000, guid: aa094b3040b7c0c48a5ed5f629b55603, type: 2}
     soldierSpawnSpace: {x: 1.25, y: 1.25}
     transform: {fileID: 519950564}
-    leftBackPoint: {fileID: 1241922865}
-    rightFrontPoint: {fileID: 2029361993}
+    place:
+      leftBackPoint: {fileID: 1241922865}
+      rightFrontPoint: {fileID: 2029361993}
 --- !u!1 &550812102
 GameObject:
   m_ObjectHideFlags: 0
@@ -1441,8 +1440,9 @@ MonoBehaviour:
     team: {fileID: 11400000, guid: d938532961d9f06438b4ef59f0a0d2eb, type: 2}
     soldierSpawnSpace: {x: 1.25, y: 1.25}
     transform: {fileID: 2089251196}
-    leftBackPoint: {fileID: 1051086838}
-    rightFrontPoint: {fileID: 1085308817}
+    place:
+      leftBackPoint: {fileID: 1051086838}
+      rightFrontPoint: {fileID: 1085308817}
 --- !u!4 &2089251196
 Transform:
   m_ObjectHideFlags: 0
