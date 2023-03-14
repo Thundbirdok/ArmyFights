@@ -13,30 +13,30 @@ namespace Plugins.ArmyFights.Core.Place
 
             var rightFront = place.RightFrontLocalPosition;
             var leftBack = place.LeftBackLocalPosition;
-            
+
             var xDistance = rightFront.x - leftBack.x;
             var xOffset = (xDistance % space.x) / 2;
-            
+
             var zDistance = rightFront.z - leftBack.z;
             var zOffset = (zDistance % space.y) / 2;
 
-            var horizontalStart = leftBack.z + zOffset + space.y / 2;
-            var horizontalEnd = rightFront.z - space.y / 2;
+            var verticalStart = leftBack.z + zOffset + space.y / 2;
+            var verticalEnd = rightFront.z - space.y / 2;
 
             for
             (
-                var i = horizontalStart;
-                i < horizontalEnd;
+                var i = verticalStart;
+                i <= verticalEnd;
                 i += space.y
             )
             {
-                var verticalStart = leftBack.x + xOffset + space.x / 2;
-                var verticalEnd = rightFront.x - space.x / 2;
+                var horizontalStart = leftBack.x + xOffset + space.x / 2;
+                var horizontalEnd = rightFront.x - space.x / 2;
 
                 for
                 (
-                    var j = verticalStart;
-                    j < verticalEnd;
+                    var j = horizontalStart;
+                    j <= horizontalEnd;
                     j += space.x
                 )
                 {

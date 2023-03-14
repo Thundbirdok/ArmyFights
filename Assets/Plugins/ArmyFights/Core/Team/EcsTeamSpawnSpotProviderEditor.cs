@@ -26,22 +26,21 @@ namespace Plugins.ArmyFights.Core.Team
                 leftBackPosition.z + spotSize.z / 2
             );
 
-            var center = componentTransform.TransformPoint(localCenter);
-            
             var prevColor = Gizmos.color;
-
+            var gizmoDefaultMatrix = Gizmos.matrix;
+            
+            Gizmos.matrix = componentTransform.transform.localToWorldMatrix;
+            
             Gizmos.color = component.team.Color * 0.8f;
 
-            Gizmos.DrawCube(center, spotSize2d);
+            Gizmos.DrawCube(localCenter, spotSize2d);
 
             var positions = PlaceUtility.GetSpaceLocalPositionsInPlace
             (
                 component.place,
                 component.soldierSpawnSpace
             );
-            
-            PlaceUtility.TransformToWorldPosition(componentTransform, positions);
-            
+
             var soldierSize = component.soldierSpawnSpace;
             var soldierSize2d = new Vector3(soldierSize.x, 0.02f, soldierSize.y);
 
@@ -56,6 +55,7 @@ namespace Plugins.ArmyFights.Core.Team
                 Gizmos.DrawWireCube(position, soldierSize2d);
             }
             
+            Gizmos.matrix = gizmoDefaultMatrix;
             Gizmos.color = prevColor;
         }
     }
