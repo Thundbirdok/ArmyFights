@@ -4,6 +4,7 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
     using Plugins.ArmyFights.Core.GameObject.Scripts;
     using Plugins.ArmyFights.Core.Health.Scripts;
     using Plugins.ArmyFights.Core.Place;
+    using Plugins.ArmyFights.Core.Rigidbody.Scripts;
     using Plugins.ArmyFights.Core.Team;
     using Plugins.ArmyFights.Example.Scripts;
     using Scellecs.Morpeh;
@@ -92,6 +93,13 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
                 var colorControllerComponent = colorControllerProvider.Stash.Get(colorControllerProvider.Entity);
 
                 colorControllerComponent.meshRenderer.material.color = color;
+            }
+            
+            if (soldier.TryGetComponent(out EcsRigidbodyProvider rigidbodyProvider))
+            {
+                var rigidbodyComponent = rigidbodyProvider.Stash.Get(rigidbodyProvider.Entity);
+
+                rigidbodyComponent.rigidbody.solverIterations = 1;
             }
             
             if (soldier.TryGetComponent(out EcsGameObjectProvider gameObjectProvider))

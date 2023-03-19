@@ -14,8 +14,7 @@ namespace Plugins.ArmyFights.Core.Movement.Scripts
     public sealed class EcsUpdateMovementComponentFixedSystem : FixedUpdateSystem 
     {
         private Filter filter;
-    
-        private Stash<EcsTransformComponent> transformStash;
+        
         private Stash<EcsMovementComponent> movementStash;
     
         public override void OnAwake()
@@ -25,7 +24,6 @@ namespace Plugins.ArmyFights.Core.Movement.Scripts
                 .With<EcsTransformComponent>();
                 
             movementStash = World.GetStash<EcsMovementComponent>();
-            transformStash = World.GetStash<EcsTransformComponent>();
         }
     
         public override void OnUpdate(float deltaTime) 
