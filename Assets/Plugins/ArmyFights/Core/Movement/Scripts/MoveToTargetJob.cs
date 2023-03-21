@@ -1,8 +1,6 @@
 namespace Plugins.ArmyFights.Core.Movement.Scripts
 {
     using Plugins.ArmyFights.Core.Fights.Scripts;
-    using Scellecs.Morpeh;
-    using Scellecs.Morpeh.Native;
     using Unity.Burst;
     using Unity.Collections;
     using Unity.Jobs;
@@ -24,7 +22,7 @@ namespace Plugins.ArmyFights.Core.Movement.Scripts
 
         public void Execute(int index) => MoveToTarget(Entities[index]);
 
-        private void MoveToTarget(EntityId entity)
+        private void MoveToTarget(int entity)
         {
             var fighterComponent = FighterStash.Get(entity);
             var targetDataComponent = TargetDataStash.Get(entity);

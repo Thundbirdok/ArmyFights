@@ -4,9 +4,9 @@ namespace Plugins.ArmyFights.Core.Place
     using UnityEngine;
 
     [System.Serializable]
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+    // [Il2CppSetOption(Option.NullChecks, false)]
+    // [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    // [Il2CppSetOption(Option.DivideByZeroChecks, false)]
     public struct SquarePlace
     {
         public Transform leftBackPoint;

@@ -1,4 +1,3 @@
-using Scellecs.Morpeh;
 using Unity.IL2CPP.CompilerServices;
 
 namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
@@ -6,10 +5,10 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
     using UnityEngine;
 
     [System.Serializable]
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    public struct EcsSoldierContainerComponent : IComponent
+    // [Il2CppSetOption(Option.NullChecks, false)]
+    // [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    // [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+    public struct EcsSoldierContainerComponent
     {
         public Transform transform;
     }

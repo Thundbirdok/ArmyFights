@@ -1,36 +1,38 @@
-using Scellecs.Morpeh.Systems;
 using Unity.IL2CPP.CompilerServices;
 using UnityEngine;
 
 namespace Plugins.ArmyFights.Core.Movement.Scripts
 {
+    using Leopotam.EcsLite;
     using Plugins.ArmyFights.Core.Transform.Scripts;
-    using Scellecs.Morpeh;
-
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    [CreateAssetMenu(menuName = "ECS/Systems/" + nameof(EcsUpdateMovementComponentFixedSystem))]
-    public sealed class EcsUpdateMovementComponentFixedSystem : FixedUpdateSystem 
+    
+    // [Il2CppSetOption(Option.NullChecks, false)]
+    // [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    // [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+    // [CreateAssetMenu(menuName = "ECS/Systems/" + nameof(EcsUpdateMovementComponentFixedSystem))]
+    public sealed class EcsUpdateMovementComponentFixedSystem : IEcsInitSystem, IEcsRunSystem 
     {
-        private Filter filter;
+        private EcsFilter filter;
         
-        private Stash<EcsMovementComponent> movementStash;
-    
-        public override void OnAwake()
+        private EcsPool<EcsMovementComponent> movementPool;
+
+        public void Init(IEcsSystems systems)
         {
-            filter = World.Filter
-                .With<EcsMovementComponent>()
-                .With<EcsTransformComponent>();
+            var world = systems.GetWorld();
+        
+            filter = world
+                .Filter<EcsMovementComponent>()
+                .Inc<EcsTransformComponent>()
+                .End();
                 
-            movementStash = World.GetStash<EcsMovementComponent>();
+            movementPool = world.GetPool<EcsMovementComponent>();
         }
-    
-        public override void OnUpdate(float deltaTime) 
+
+        public void Run(IEcsSystems systems)
         {
             foreach (var entity in filter)
             {
-                ref var component = ref movementStash.Get(entity);
+                ref var component = ref movementPool.Get(entity);
                 
                 component.CurrentForce = Vector3.zero;
             }

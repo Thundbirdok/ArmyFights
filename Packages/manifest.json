@@ -1,6 +1,8 @@
 {
   "dependencies": {
-    "com.scellecs.morpeh": "https://github.com/scellecs/morpeh.git",
+    "com.leopotam.ecslite": "https://github.com/Leopotam/ecslite.git",
+    "com.leopotam.ecslite.di": "https://github.com/Leopotam/ecslite-di.git",
+    "com.leoecscommunity.ecslite.threads.unity": "https://github.com/LeoECSCommunity/ecslite-threads-unity.git",
     "com.unity.burst": "1.6.6",
     "com.unity.collab-proxy": "2.0.0",
     "com.unity.feature.development": "1.0.1",

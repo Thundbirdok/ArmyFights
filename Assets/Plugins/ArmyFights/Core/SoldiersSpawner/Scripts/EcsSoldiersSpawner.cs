@@ -1,42 +1,67 @@
 namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
 {
+    using Leopotam.EcsLite;
+    using Leopotam.EcsLite.Di;
     using Plugins.ArmyFights.Core.Fights.Scripts;
     using Plugins.ArmyFights.Core.GameObject.Scripts;
     using Plugins.ArmyFights.Core.Health.Scripts;
+    using Plugins.ArmyFights.Core.Movement.Scripts;
     using Plugins.ArmyFights.Core.Place;
     using Plugins.ArmyFights.Core.Rigidbody.Scripts;
+    using Plugins.ArmyFights.Core.Soldier;
     using Plugins.ArmyFights.Core.Team;
+    using Plugins.ArmyFights.Core.Transform.Scripts;
     using Plugins.ArmyFights.Example.Scripts;
-    using Scellecs.Morpeh;
-    using Scellecs.Morpeh.Systems;
     using Unity.IL2CPP.CompilerServices;
     using UnityEngine;
 
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    [CreateAssetMenu(menuName = "ECS/Initializers/" + nameof(EcsSoldiersSpawner))]
-    public sealed class EcsSoldiersSpawner : Initializer
+    // [Il2CppSetOption(Option.NullChecks, false)]
+    // [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    // [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+    // [CreateAssetMenu(menuName = "ECS/Initializers/" + nameof(EcsSoldiersSpawner))]
+    public sealed class EcsSoldiersSpawner : IEcsInitSystem
     {
         [SerializeField]
         private GameObject soldierPrefab;
 
-        public override void OnAwake()
-        {
-            var containerFilter = World.Filter.With<EcsSoldierContainerComponent>();
+        private EcsWorldInject world;
+        
+        private EcsFilterInject<Inc<EcsTeamSpawnSpotComponent>> teamsFilter;
+        private EcsFilterInject<Inc<EcsSoldierContainerComponent>> containerFilter;
 
-            var container = containerFilter.First().GetComponent<EcsSoldierContainerComponent>();
-            
-            var teamsFilter = World.Filter.With<EcsTeamSpawnSpotComponent>();
-            
-            Spawn(teamsFilter, container);
+        private EcsPoolInject<EcsSoldierContainerComponent> containerPool;
+        private EcsPoolInject<EcsTeamSpawnSpotComponent> spawnSpotPool;
+
+        private EcsPoolInject<EcsGameObjectComponent> gameObjectPool;
+        private EcsPoolInject<EcsTransformComponent> transformPool;
+        private EcsPoolInject<EcsRigidbodyComponent> rigidbodyPool;
+        private EcsPoolInject<EcsHealthComponent> healthPool;
+        private EcsPoolInject<EcsMovementComponent> movementPool;
+        private EcsPoolInject<EcsFightableComponent> fightablePool;
+        private EcsPoolInject<EcsFighterComponent> fighterPool;
+        private EcsPoolInject<EcsColorControllerComponent> colorControllerPool;
+
+        public void Init(IEcsSystems systems)
+        {
+            var container = GetContainer();
+
+            Spawn(container);
         }
 
-        private void Spawn(Filter teamsFilter, EcsSoldierContainerComponent container)
+        private EcsSoldierContainerComponent GetContainer()
         {
-            foreach (var entity in teamsFilter)
+            var containerId = containerFilter.Value.GetEnumerator().Current;
+
+            var container = containerPool.Value.Get(containerId);
+
+            return container;
+        }
+
+        private void Spawn(EcsSoldierContainerComponent container)
+        {
+            foreach (var entity in teamsFilter.Value)
             {
-                var team = entity.GetComponent<EcsTeamSpawnSpotComponent>();
+                var team = spawnSpotPool.Value.Get(entity);
 
                 var positions = PlaceUtility.GetSpaceLocalPositionsInPlace
                 (
@@ -60,11 +85,6 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
             }
         }
 
-        public override void Dispose() 
-        {
-            
-        }
-
         private void CreateSoldier
         (
             Transform container, 
@@ -74,40 +94,46 @@ namespace Plugins.ArmyFights.Core.SoldiersSpawner.Scripts
             Color color
         )
         {
-            var soldier = Instantiate(soldierPrefab, position, rotation, container);
+            var soldier = Object.Instantiate
+            (
+                soldierPrefab,
+                position, 
+                rotation,
+                container
+            );
 
-            if (soldier.TryGetComponent(out EcsHealthProvider healthProvider))
+            var entity = world.Value.NewEntity();
+            
+            if (soldier.TryGetComponent(out SoldierMonoProvider soldierProvider))
             {
-                ref var healthComponent = ref healthProvider.Stash.Get(healthProvider.Entity);
-                healthComponent.HealthPoints = healthComponent.maxHealthPoints;
+                soldierProvider.AddToEntity
+                (
+                    entity,
+                    gameObjectPool.Value,
+                    transformPool.Value,
+                    rigidbodyPool.Value,
+                    healthPool.Value,
+                    movementPool.Value,
+                    fightablePool.Value,
+                    fighterPool.Value,
+                    colorControllerPool.Value
+                );
             }
             
-            if (soldier.TryGetComponent(out EcsFightableProvider fightableProvider))
-            {
-                ref var fightableComponent = ref fightableProvider.Stash.Get(fightableProvider.Entity);
-                fightableComponent.Side = side;
-            }
-
-            if (soldier.TryGetComponent(out EcsColorControllerProvider colorControllerProvider))
-            {
-                var colorControllerComponent = colorControllerProvider.Stash.Get(colorControllerProvider.Entity);
-
-                colorControllerComponent.meshRenderer.material.color = color;
-            }
+            ref var healthComponent = ref healthPool.Value.Get(entity);
+            healthComponent.HealthPoints = healthComponent.maxHealthPoints;
             
-            if (soldier.TryGetComponent(out EcsRigidbodyProvider rigidbodyProvider))
-            {
-                var rigidbodyComponent = rigidbodyProvider.Stash.Get(rigidbodyProvider.Entity);
-
-                rigidbodyComponent.rigidbody.solverIterations = 1;
-            }
+            ref var fightableComponent = ref fightablePool.Value.Get(entity);
+            fightableComponent.Side = side;
             
-            if (soldier.TryGetComponent(out EcsGameObjectProvider gameObjectProvider))
-            {
-                var gameObjectComponent = gameObjectProvider.Stash.Get(gameObjectProvider.Entity);
-
-                gameObjectComponent.gameObject.SetActive(true);
-            }
+            var colorControllerComponent = colorControllerPool.Value.Get(entity);
+            colorControllerComponent.meshRenderer.material.color = color;
+            
+            var rigidbodyComponent = rigidbodyPool.Value.Get(entity);
+            rigidbodyComponent.rigidbody.solverIterations = 1;
+            
+            var gameObjectComponent = gameObjectPool.Value.Get(entity);
+            gameObjectComponent.gameObject.SetActive(true);
         }
     }
 }

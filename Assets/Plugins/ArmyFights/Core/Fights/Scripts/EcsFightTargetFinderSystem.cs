@@ -1,40 +1,32 @@
-using Scellecs.Morpeh.Systems;
 using Unity.IL2CPP.CompilerServices;
 using UnityEngine;
 
 namespace Plugins.ArmyFights.Core.Fights.Scripts
 {
-    using Scellecs.Morpeh;
+    using Leopotam.EcsLite;
+    using Leopotam.EcsLite.Di;
 
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    [CreateAssetMenu(menuName = "ECS/Systems/" + nameof(EcsFightTargetFinderSystem))]
-    public sealed class EcsFightTargetFinderSystem : LateUpdateSystem
+    // [Il2CppSetOption(Option.NullChecks, false)]
+    // [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    // [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+    // [CreateAssetMenu(menuName = "ECS/Systems/" + nameof(EcsFightTargetFinderSystem))]
+    public sealed class EcsFightTargetFinderSystem : IEcsRunSystem
     {
         [SerializeField]
         private float updatesPerSecond = 10;
         
-        private Filter fighterFilter;
-        private Filter fightableFilter;
+        private EcsFilterInject<Inc<EcsFighterComponent>> fighterFilter;
+        private EcsFilterInject<Inc<EcsFightableComponent>> fightableFilter;
 
-        private Stash<EcsFightableComponent> fightableStash;
-        private Stash<EcsFightTargetDataComponent> targetDataStash;
+        private EcsPoolInject<EcsFighterComponent> fighterPool;
+        private EcsPoolInject<EcsFightableComponent> fightablePool;
+        private EcsPoolInject<EcsFightTargetDataComponent> targetDataPool;
         
-        private float _timer;
-        
-        public override void OnAwake()
-        {
-            fighterFilter = World.Filter.With<EcsFighterComponent>();
-            fightableFilter = World.Filter.With<EcsFightableComponent>();
+        private float timer;
 
-            fightableStash = World.GetStash<EcsFightableComponent>();
-            targetDataStash = World.GetStash<EcsFightTargetDataComponent>();
-        }
-
-        public override void OnUpdate(float deltaTime)
+        public void Run(IEcsSystems systems)
         {
-            if (IsCanUpdate(deltaTime) == false)
+            if (IsCanUpdate(Time.deltaTime) == false)
             {
                 return;
             }
@@ -46,50 +38,50 @@ namespace Plugins.ArmyFights.Core.Fights.Scripts
 
         private bool IsCanUpdate(float deltaTime)
         {
-            _timer += deltaTime;
+            timer += deltaTime;
 
-            if (_timer < 1 / updatesPerSecond)
+            if (timer < 1 / updatesPerSecond)
             {
                 return false;
             }
 
-            _timer = 0;
+            timer = 0;
 
             return true;
         }
 
         private void CleanTargets()
         {
-            foreach (var entity in fighterFilter)
+            foreach (var entity in fighterFilter.Value)
             {
-                entity.RemoveComponent<EcsFightTargetDataComponent>();
+                fighterPool.Value.Del(entity);
             }
         }
 
         private void FindTargets()
         {
-            foreach (var entity in fighterFilter)
+            foreach (var entity in fighterFilter.Value)
             {
                 FindClosestFightableEntity(entity);
             }
         }
 
-        private void FindClosestFightableEntity(Entity entity)
+        private void FindClosestFightableEntity(int entity)
         {
-            var fightableComponent = fightableStash.Get(entity);
+            var fightableComponent = fightablePool.Value.Get(entity);
         
             var directionToClosest = Vector3.forward;
             var minSqrDistance = float.MaxValue;
-            var closestEntityId = EntityId.Invalid;
+            var closestEntityId = -1;
             
-            foreach (var possibleTarget in fightableFilter)
+            foreach (var possibleTarget in fightableFilter.Value)
             {
                 if (entity == possibleTarget)
                 {
                     continue;
                 }
         
-                var possibleTargetComponent = fightableStash.Get(possibleTarget);
+                var possibleTargetComponent = fightablePool.Value.Get(possibleTarget);
         
                 if (possibleTargetComponent.Side == fightableComponent.Side)
                 {
@@ -105,21 +97,20 @@ namespace Plugins.ArmyFights.Core.Fights.Scripts
                     continue;
                 }
         
-                closestEntityId = possibleTarget.ID;
+                closestEntityId = possibleTarget;
                 minSqrDistance = sqrDistance;
                 directionToClosest = direction;
             }
         
-            if (closestEntityId == EntityId.Invalid)
+            if (closestEntityId == -1)
             {
                 return;
             }
 
-            targetDataStash.Set(entity, new EcsFightTargetDataComponent
-            {
-                TargetId = closestEntityId,
-                DirectionToTarget = directionToClosest
-            });
+            ref var fightTargetDataComponent = ref targetDataPool.Value.Add(entity);
+
+            fightTargetDataComponent.TargetId = closestEntityId;
+            fightTargetDataComponent.DirectionToTarget = directionToClosest;
         }
     }
 }

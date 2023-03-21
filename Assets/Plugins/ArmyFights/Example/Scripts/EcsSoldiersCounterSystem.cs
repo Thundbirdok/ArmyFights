@@ -1,4 +1,3 @@
-using Scellecs.Morpeh.Systems;
 using Unity.IL2CPP.CompilerServices;
 using UnityEngine;
 
@@ -6,14 +5,15 @@ namespace Plugins.ArmyFights.Example.Scripts
 {
     using System;
     using System.Linq;
+    using Leopotam.EcsLite;
+    using Leopotam.EcsLite.Di;
     using Plugins.ArmyFights.Core.Fights.Scripts;
-    using Scellecs.Morpeh;
-
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    [CreateAssetMenu(menuName = "ECS/Systems/" + nameof(EcsSoldiersCounterSystem))]
-    public sealed class EcsSoldiersCounterSystem : UpdateSystem
+    
+    // [Il2CppSetOption(Option.NullChecks, false)]
+    // [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    // [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+    //[CreateAssetMenu(menuName = "ECS/Systems/" + nameof(EcsSoldiersCounterSystem))]
+    public sealed class EcsSoldiersCounterSystem : IEcsInitSystem, IEcsRunSystem
     {
         public event Action OnChangedValue; 
         
@@ -39,18 +39,16 @@ namespace Plugins.ArmyFights.Example.Scripts
             }
         }
 
-        private Filter filter;
+        private EcsFilterInject<Inc<EcsFighterComponent>> filter;
         
-        public override void OnAwake()
+        public void Init(IEcsSystems systems)
         {
-            filter = World.Filter.With<EcsFighterComponent>();
-
             Count = 0;
         }
 
-        public override void OnUpdate(float deltaTime)
+        public void Run(IEcsSystems systems)
         {
-            Count = filter.Count();
+            Count = filter.Value.GetEntitiesCount();
         }
     }
 }

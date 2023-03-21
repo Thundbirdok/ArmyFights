@@ -9,7 +9,7 @@ namespace Plugins.ArmyFights.Core.Team
         [DrawGizmo(GizmoType.InSelectionHierarchy)]
         private static void DrawGizmos(EcsTeamSpawnSpotProvider spot, GizmoType gizmoType)
         {
-            var component = spot.GetSerializedData();
+            var component = spot.TeamSpawnSpotComponent;
             
             var leftBackPosition = component.LeftBackLocalPosition;
             var rightFrontPosition = component.RightFrontLocalPosition;

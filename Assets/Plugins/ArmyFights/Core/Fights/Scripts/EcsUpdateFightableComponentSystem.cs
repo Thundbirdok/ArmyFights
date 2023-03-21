@@ -1,40 +1,30 @@
-using Scellecs.Morpeh.Systems;
 using Unity.IL2CPP.CompilerServices;
 using UnityEngine;
 
 namespace Plugins.ArmyFights.Core.Fights.Scripts
 {
+    using Leopotam.EcsLite;
+    using Leopotam.EcsLite.Di;
     using Plugins.ArmyFights.Core.Transform.Scripts;
-    using Scellecs.Morpeh;
 
-    [Il2CppSetOption(Option.NullChecks, false)]
-    [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
-    [Il2CppSetOption(Option.DivideByZeroChecks, false)]
-    [CreateAssetMenu(menuName = "ECS/Systems/" + nameof(EcsUpdateFightableComponentSystem))]
-    public sealed class EcsUpdateFightableComponentSystem : UpdateSystem 
+    // [Il2CppSetOption(Option.NullChecks, false)]
+    // [Il2CppSetOption(Option.ArrayBoundsChecks, false)]
+    // [Il2CppSetOption(Option.DivideByZeroChecks, false)]
+    //[CreateAssetMenu(menuName = "ECS/Systems/" + nameof(EcsUpdateFightableComponentSystem))]
+    public sealed class EcsUpdateFightableComponentSystem : IEcsRunSystem
     {
-        private Filter filter;
+        private EcsFilterInject<Inc<EcsFightableComponent, EcsTransformComponent>> filter;
 
-        private Stash<EcsTransformComponent> transformStash;
-        private Stash<EcsFightableComponent> fightableStash;
+        private EcsPoolInject<EcsTransformComponent> transformPool;
+        private EcsPoolInject<EcsFightableComponent> fightablePool;
 
-        public override void OnAwake()
+        public void Run(IEcsSystems systems)
         {
-            filter = World.Filter
-                .With<EcsFightableComponent>()
-                .With<EcsTransformComponent>();
-            
-            fightableStash = World.GetStash<EcsFightableComponent>();
-            transformStash = World.GetStash<EcsTransformComponent>();
-        }
-
-        public override void OnUpdate(float deltaTime) 
-        {
-            foreach (var entity in filter)
+            foreach (var entity in filter.Value)
             {
-                ref var component = ref fightableStash.Get(entity);
+                ref var component = ref fightablePool.Value.Get(entity);
 
-                component.Position = transformStash.Get(entity).transform.position;
+                component.Position = transformPool.Value.Get(entity).transform.position;
             }
         }
     }

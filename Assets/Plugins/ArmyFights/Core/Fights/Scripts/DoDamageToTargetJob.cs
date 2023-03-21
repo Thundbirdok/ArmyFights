@@ -1,8 +1,6 @@
 namespace Plugins.ArmyFights.Core.Fights.Scripts
 {
     using Plugins.ArmyFights.Core.Health.Scripts;
-    using Scellecs.Morpeh;
-    using Scellecs.Morpeh.Native;
     using Unity.Burst;
     using Unity.Collections;
     using Unity.Jobs;
@@ -27,7 +25,7 @@ namespace Plugins.ArmyFights.Core.Fights.Scripts
         
         public void Execute(int index) => DoDamage(Entities[index]);
 
-        private void DoDamage(EntityId entity)
+        private void DoDamage(int entity)
         {
             ref var fighterComponent = ref FighterStash.Get(entity);
 
